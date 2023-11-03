@@ -6,7 +6,6 @@
 
 SI4735 si4735;
 
-
 void frequency_up_pressed() // functie van isr 1
 {
   si4735.frequencyUp();
@@ -23,8 +22,6 @@ void frequency_down_pressed() // functie isr 2
 void frequency_up_pressed();
 void frequency_down_pressed();
 
-=======
->>>>>>> d64717c8797bbf43e7df30c9d10d625d08574773
 volatile float current = 100e6;
 
 // buttons pin configured
