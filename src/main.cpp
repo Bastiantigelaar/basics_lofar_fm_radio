@@ -31,7 +31,7 @@ void volume_display();
 void frequency_display();
 void SNR_display();
 void audio_display();
-
+void signal_display();
 uint16_t currentFrequency;
 uint16_t previousFrequency;
 
@@ -119,6 +119,7 @@ void setup()
   delay(500);
   si4735.setup(D9, FM_FUNCTION);
   // Starts defaul radio function and band (FM; from 84 to 108 MHz; 103.D9 MHz; step 100kHz)
+  si4735.setup(RESET_PIN, FM_FUNCTION);                      // sets to fm function
   si4735.setFM(8400, 10800, 10390, 10);
   delay(500);
 
@@ -129,14 +130,13 @@ void setup()
   // so for example 6400 means 64 Mhz, ect
 
   // default values
-  int min_freq = 6400;
-  int max_freq = 10800;
-  int default_freq = 9000;
-  int step_freq = 10;
+  //int //min_freq = 6400;
+  //int //max_freq = 10800;
+  //int default_freq = 9000;
+  //int step_freq = 10;
 
   // setup FM functionality
-  si4735.setup(RESET_PIN, FM_FUNCTION);                      // sets to fm function
-  si4735.setFM(min_freq, max_freq, default_freq, step_freq); // set the values that are defined above ^
+ // si4735.setFM(min_freq, max_freq, default_freq, step_freq); // set the values that are defined above ^
   si4735.setVolume(20);
   // previous frequency and volume
   currentFrequency = previousFrequency = si4735.getFrequency();
@@ -159,6 +159,8 @@ void loop()
     previousFrequency = currentFrequency;
     frequency_display();
     SNR_display();
+    signal_display();
+    audio_display();
     show_status();
   }
   else if (currentVolume != previousVolume)
@@ -166,6 +168,9 @@ void loop()
     previousVolume = currentVolume;
     volume_display();
     SNR_display();
+
+    signal_display();
+    audio_display();
     show_status();
   }
 
