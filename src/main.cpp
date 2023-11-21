@@ -1,8 +1,15 @@
-#include <Arduino.h> // arduino library
+#include <Arduino.h>
+// FM CHIP 
 #include <SI4735.h>
 #include <control.h>
 
+//DISPLAY
 #include <TFT.h>
+#include "SPI.h"
+#include "Adafruit_GFX.h"
+#include "Adafruit_ILI9341.h"
+
+
 // #include "ArduinoLowPower.h"
 SI4735 si4735;
 
