@@ -26,9 +26,11 @@ void showStatus();
 // void showHelp();
 
 // DISPLAY FUNCTION
+void main_display();
 void volume_display();
 void frequency_display();
-void main_display();
+void SNR_display();
+void audio_display();
 
 uint16_t currentFrequency;
 uint16_t previousFrequency;
@@ -156,12 +158,14 @@ void loop()
   {
     previousFrequency = currentFrequency;
     frequency_display();
+    SNR_display();
     show_status();
   }
   else if (currentVolume != previousVolume)
   {
     previousVolume = currentVolume;
     volume_display();
+    SNR_display();
     show_status();
   }
 
@@ -243,18 +247,40 @@ void show_status()
 // -----------------------------------------DISPLAY ----------------------------------
 void frequency_display()
 {
-  tft.setCursor(80, 60);
+  tft.setCursor(70, 60);
   tft.setTextColor(ILI9341_RED, ILI9341_WHITE);
-  tft.setTextSize(4);
-  tft.println(String(currentFrequency / 100.0,2));
+  tft.setTextSize(4.2);
+  tft.println(String(currentFrequency / 100.0, 2));
 }
 void volume_display()
 {
-  tft.setCursor(0, 110);
+  tft.setCursor(140, 110);
   tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
-  tft.setTextSize(2);
-  tft.println("Het volume level is " + String(currentVolume));
+  tft.setTextSize(3);
+  tft.println(String(currentVolume));
 }
+void SNR_display()
+{
+  tft.setCursor(140, 140);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println(String(si4735.getCurrentSNR()) + "dB");
+}
+void signal_display()
+{
+  tft.setCursor(140, 170);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println(String(si4735.getCurrentRSSI()) + "dBuV");
+}
+void audio_display()
+{
+  tft.setCursor(140, 200);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println((si4735.getCurrentPilot()) ? "STEREO" : "MONO");
+}
+// THIS IS THE DEFAULT SCREEN FOR THE 2.2 INCH DISPLAY
 void main_display()
 {
   tft.begin();
@@ -267,13 +293,51 @@ void main_display()
 
   tft.setCursor(70, 60);
   tft.setTextColor(ILI9341_RED, ILI9341_WHITE);
-  tft.setTextSize(4);
-  tft.println(String(currentFrequency / 100.0,2) + " MHz");
+  tft.setTextSize(4.2);
+  tft.println(String(currentFrequency / 100.0, 2) + " MHz");
 
+  tft.setCursor(10, 110);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println("Volume ");
 
+  tft.setCursor(140, 110);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println(String(currentVolume));
 
+  tft.setCursor(10, 140);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println("SNR ");
 
+  tft.setCursor(140, 140);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println(String(si4735.getCurrentSNR()) + "dB");
 
+  tft.setCursor(10, 170);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println("Signal ");
 
+  tft.setCursor(140, 170);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println(String(si4735.getCurrentRSSI()) + "dBuV");
+
+  tft.setCursor(10, 200);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println("AUDIO ");
+
+  tft.setCursor(140, 200);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println((si4735.getCurrentPilot()) ? "STEREO" : "MONO");
+
+  // tft.setCursor(70, 60);
+  // tft.setTextColor(ILI9341_RED, ILI9341_WHITE);
+  // tft.setTextSize(4);
+  // tft.println(String(currentFrequency / 100.0, 2) + " MHz");
 }
-
