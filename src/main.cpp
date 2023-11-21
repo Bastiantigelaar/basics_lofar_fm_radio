@@ -15,6 +15,7 @@ void config_i2c_adress();
 void show_status();
 
 uint16_t currentFrequency;
+uint16_t previousFrequency;
 
 // volatile float current = 100e6;
 
@@ -107,15 +108,27 @@ void setup()
     si4735.setup(RESET_PIN, FM_FUNCTION);                      // sets to fm function
     si4735.setFM(min_freq, max_freq, default_freq, step_freq); // set the values that are defined above ^
     si4735.setVolume(20);
+    // previous frequency
+    currentFrequency = previousFrequency = si4735.getFrequency();
+
     show_status();
 }
 void loop()
 {
   // test of signal quality, audio, and SNR, print status. 
-  show_status();
-  delay(1000); 
+  if(Serial.available() > 0){
 
+  delay(100);
+  currentFrequency = si4735.getCurrentFrequency();
+  // checken status, when frequecy changes
 
+  if (currentFrequency != previousFrequency)
+  {
+    previousFrequency = currentFrequency;
+    show_status(); 
+    delay(300);
+  }
+  }
   // LowPower.sleep();
 }
 // functions
