@@ -13,7 +13,7 @@
 SI4735 si4735;
 
 // display [tft] declaration
-// Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8, A6, A4, D10, A5);
+Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8, A6, A4, D10, A5);
 
 // functions prototypes
 void frequency_up_pressed();
@@ -23,7 +23,12 @@ void volume_down_pressed();
 void config_i2c_adress();
 void show_status();
 void showStatus();
-void showHelp();
+// void showHelp();
+
+// DISPLAY FUNCTION
+void volume_display();
+void frequency_display();
+void main_display();
 
 uint16_t currentFrequency;
 uint16_t previousFrequency;
@@ -35,8 +40,8 @@ uint8_t previousVolume;
 
 // buttons frequency up and down
 
-int frequency_up_button = D11;
-int frequency_down_button = D10;
+int frequency_up_button = D12;
+int frequency_down_button = D11;
 
 // buttons volume up and down
 int volume_up_button = D0;
@@ -137,37 +142,26 @@ void setup()
 
   show_status();
   //----------------------------DISPLAY-------------------------------------------
-  /* SETUP OF DISPLAY
-  tft.begin();
-
-  tft.se1tRotation(3);
-  tft.setCursor(26, 5);
-  tft.setTextColor(ILI9341_RED);
-  tft.setTextSize(6);
-  tft.println("LOFAR-FM RADIO!");
-
-  tft.setCursor(0, 100);
-  tft.setTextColor(ILI9341_GREEN);
-  tft.setTextSize(3);
-  tft.println("Bastian Tigelaar en Leon Weber");
-  */
+  // SETUP OF DISPLAY
+  main_display();
 }
 void loop()
 {
   // test of signal quality, audio, and SNR, print status.
   currentFrequency = si4735.getCurrentFrequency();
   currentVolume = si4735.getCurrentVolume();
-  
+
   // checken status, when frequecy changes
   if (currentFrequency != previousFrequency)
   {
     previousFrequency = currentFrequency;
+    frequency_display();
     show_status();
   }
   else if (currentVolume != previousVolume)
   {
-    Serial.print("ik kom in de else if terecht");
     previousVolume = currentVolume;
+    volume_display();
     show_status();
   }
 
@@ -247,18 +241,39 @@ void show_status()
 }
 
 // -----------------------------------------DISPLAY ----------------------------------
-/*void frequency_display()
+void frequency_display()
 {
-  tft.setCursor(0, 160);
-  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
-  tft.setTextSize(3);
-  tft.println("De frequentie is " + String(currentFrequency));
+  tft.setCursor(80, 60);
+  tft.setTextColor(ILI9341_RED, ILI9341_WHITE);
+  tft.setTextSize(4);
+  tft.println(String(currentFrequency / 100.0,2));
 }
 void volume_display()
 {
-  tft.setCursor(0, 200);
+  tft.setCursor(0, 110);
   tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
-  tft.setTextSize(3);
-  tft.println("Het volume level is " + String());
+  tft.setTextSize(2);
+  tft.println("Het volume level is " + String(currentVolume));
 }
-*/
+void main_display()
+{
+  tft.begin();
+  tft.fillScreen(ILI9341_WHITE);
+  tft.setRotation(3.5);
+  tft.setCursor(26, 5);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3.5);
+  tft.println("LOFAR-FM RADIO!");
+
+  tft.setCursor(70, 60);
+  tft.setTextColor(ILI9341_RED, ILI9341_WHITE);
+  tft.setTextSize(4);
+  tft.println(String(currentFrequency / 100.0,2) + " MHz");
+
+
+
+
+
+
+}
+
