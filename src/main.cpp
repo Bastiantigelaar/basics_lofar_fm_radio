@@ -60,8 +60,8 @@ int band_down_button = 17;
 // RESET PIN FOR FM RADIO
 #define RESET_PIN D9
 
-// FM function enabaled [0 == AM]
-#define FM_FUNCTION 1
+// FM function enabaled [1 == AM]
+#define FM_FUNCTION 0
 
 void setup()
 {
@@ -117,7 +117,7 @@ void setup()
   }
 
   delay(500);
-  si4735.setup(D9, FM_FUNCTION);
+
   // Starts defaul radio function and band (FM; from 84 to 108 MHz; 103.D9 MHz; step 100kHz)
   si4735.setup(RESET_PIN, FM_FUNCTION);                      // sets to fm function
   si4735.setFM(8400, 10800, 10390, 10);
