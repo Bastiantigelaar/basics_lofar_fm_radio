@@ -13,8 +13,8 @@
 SI4735 si4735;
 
 // display [tft] declaration
-Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8, A6, A4, D10, A5);
-
+ Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8, A6, A4, D10, A5);
+//Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8,D10);
 // functions prototypes
 void frequency_up_pressed();
 void frequency_down_pressed();
@@ -119,8 +119,8 @@ void setup()
   delay(500);
 
   // Starts defaul radio function and band (FM; from 84 to 108 MHz; 103.D9 MHz; step 100kHz)
-  si4735.setup(RESET_PIN, FM_FUNCTION);                      // sets to fm function
-  si4735.setFM(8400, 10800, 10390, 10);
+  si4735.setup(RESET_PIN, FM_FUNCTION); // sets to fm function
+  si4735.setFM(6400, 10800, 10000, 10);
   delay(500);
 
   // TUNE FM CHIP TO FM
@@ -130,13 +130,13 @@ void setup()
   // so for example 6400 means 64 Mhz, ect
 
   // default values
-  //int //min_freq = 6400;
-  //int //max_freq = 10800;
-  //int default_freq = 9000;
-  //int step_freq = 10;
+  // int //min_freq = 6400;
+  // int //max_freq = 10800;
+  // int default_freq = 9000;
+  // int step_freq = 10;
 
   // setup FM functionality
- // si4735.setFM(min_freq, max_freq, default_freq, step_freq); // set the values that are defined above ^
+  // si4735.setFM(min_freq, max_freq, default_freq, step_freq); // set the values that are defined above ^
   si4735.setVolume(20);
   // previous frequency and volume
   currentFrequency = previousFrequency = si4735.getFrequency();
@@ -152,17 +152,19 @@ void loop()
   // test of signal quality, audio, and SNR, print status.
   currentFrequency = si4735.getCurrentFrequency();
   currentVolume = si4735.getCurrentVolume();
-
   // checken status, when frequecy changes
   if (currentFrequency != previousFrequency)
   {
+
     previousFrequency = currentFrequency;
     frequency_display();
     SNR_display();
     signal_display();
     audio_display();
     show_status();
+    // si4735.frequencyDown();
   }
+
   else if (currentVolume != previousVolume)
   {
     previousVolume = currentVolume;
@@ -174,6 +176,9 @@ void loop()
     show_status();
   }
 
+  // si4735.frequencyUp();
+  delay(1000);
+
   // LowPower.sleep();
 }
 // functions
@@ -181,6 +186,8 @@ void loop()
 // function ISR 1
 void frequency_up_pressed()
 {
+
+  Serial.print("ik kom in de isr van de frequency up-button \n");
   si4735.frequencyUp(); // up with the step that was set
   // Serial.print(" up mode - frequency " + String(currentFrequency / 100.0, 2));    // only for debug purposes
 }
@@ -188,6 +195,7 @@ void frequency_up_pressed()
 // function ISR 2
 void frequency_down_pressed()
 {
+  Serial.print("ik kom in de isr van de frequency down-button \n");
   si4735.frequencyDown(); // down with the step that was set
   // Serial.print("down mode - frequency " + String(currentFrequency / 100.0, 2));    // only for debug puproses
 }
@@ -288,7 +296,9 @@ void audio_display()
 // THIS IS THE DEFAULT SCREEN FOR THE 2.2 INCH DISPLAY
 void main_display()
 {
+
   tft.begin();
+
   tft.fillScreen(ILI9341_WHITE);
   tft.setRotation(3.5);
   tft.setCursor(26, 5);
