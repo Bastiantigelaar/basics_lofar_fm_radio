@@ -116,3 +116,65 @@ void main_display()
     // tft.setTextSize(4);
     // tft.println(String(currentFrequency / 100.0, 2) + " MHz");
 }
+void second_display()
+{
+
+    tft.begin();
+    tft.
+    tft.fillScreen(ILI9341_WHITE);
+    tft.setRotation(3.5);
+    tft.setCursor(26, 5);
+    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+    tft.setTextSize(3.5);
+    tft.println("LOFAR-FM RADIO!");
+
+    tft.setCursor(70, 60);
+    tft.setTextColor(ILI9341_RED, ILI9341_WHITE);
+    tft.setTextSize(4.2);
+    tft.println(String(currentFrequency / 100.0, 2) + " MHz");
+
+    tft.setCursor(10, 110);
+    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println("Station ");
+
+    tft.setCursor(140, 110);
+    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+    tft.setTextSize(3);
+  //  tft.println(String(currentVolume));
+
+    tft.setCursor(10, 140);
+    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println("Station info ");
+
+    tft.setCursor(140, 140);
+    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+    tft.setTextSize(3);
+    //tft.println(String(si4735.getCurrentSNR()) + "dB");
+
+    tft.setCursor(10, 170);
+    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println("Programm info ");
+
+    tft.setCursor(140, 170);
+    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+    tft.setTextSize(3);
+   // tft.println(String(si4735.getCurrentRSSI()) + "dBuV");
+
+    tft.setCursor(10, 200);
+    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println("Tijd ");
+
+    tft.setCursor(140, 200);
+    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+    tft.setTextSize(3);
+   // tft.println((si4735.getCurrentPilot()) ? "STEREO" : "MONO");
+
+    // tft.setCursor(70, 60);
+    // tft.setTextColor(ILI9341_RED, ILI9341_WHITE);
+    // tft.setTextSize(4);
+    // tft.println(String(currentFrequency / 100.0, 2) + " MHz");
+}

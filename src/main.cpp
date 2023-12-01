@@ -14,9 +14,9 @@
 SI4735 si4735;
 
 // display [tft] declaration
- Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8, A6, A4, D10, A5);
-//Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8,D10);
-// functions prototypes
+Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8, A6, A4, D10, A5);
+// Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8,D10);
+//  functions prototypes
 void frequency_up_pressed();
 void frequency_down_pressed();
 void volume_up_pressed();
@@ -28,6 +28,7 @@ void showStatus();
 
 // DISPLAY FUNCTION
 void main_display();
+void second_display();
 void volume_display();
 void frequency_display();
 void SNR_display();
@@ -35,9 +36,11 @@ void audio_display();
 void signal_display();
 uint16_t currentFrequency;
 uint16_t previousFrequency;
-
 uint8_t currentVolume;
 uint8_t previousVolume;
+
+bool menu_toggle = true;
+void toggle_menu();
 
 // volatile float current = 100e6;
 
@@ -86,7 +89,7 @@ void setup()
 
   // setup volume down ISR
   pinMode(volume_down_button, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(volume_down_button), volume_down_pressed, RISING);
+  attachInterrupt(digitalPinToInterrupt(volume_down_button), toggle_menu, RISING);
 
   // setup volume up ISR
   pinMode(volume_up_button, INPUT_PULLDOWN);
@@ -146,6 +149,7 @@ void setup()
   show_status();
   //----------------------------DISPLAY-------------------------------------------
   // SETUP OF DISPLAY
+ 
   main_display();
 }
 void loop()
@@ -154,14 +158,17 @@ void loop()
   currentFrequency = si4735.getCurrentFrequency();
   currentVolume = si4735.getCurrentVolume();
   // checken status, when frequecy changes
-  if (currentFrequency != previousFrequency)
+  if ((currentFrequency != previousFrequency)  )
   {
 
     previousFrequency = currentFrequency;
     frequency_display();
+    if (menu_toggle)
+    {
     SNR_display();
     signal_display();
     audio_display();
+    }
     show_status();
     // si4735.frequencyDown();
   }
@@ -178,7 +185,6 @@ void loop()
   }
 
   // si4735.frequencyUp();
-
 
   // LowPower.sleep();
 }
