@@ -202,7 +202,7 @@ void loop()
 
 
 
-  if (!menu_toggle)
+  else if (!menu_toggle)
   {
     ticker.update();
   }
