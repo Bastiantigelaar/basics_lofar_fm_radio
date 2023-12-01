@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include <Ticker.h>
+
 // FM CHIP
 #include <SI4735.h>
 #include <control.h>
@@ -15,13 +17,24 @@ SI4735 si4735;
 
 // display [tft] declaration
 Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8, A6, A4, D10, A5);
-// Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8,D10);
+
+// ticker 
+Ticker ticker(check_RDS_data,1000);
+
+char *utcTime;
+char *stationName;
+char *programInfo;
+char *stationInfo;
 //  functions prototypes
 void frequency_up_pressed();
 void frequency_down_pressed();
 void volume_up_pressed();
 void volume_down_pressed();
-void config_i2c_adress();
+void check_RDS_data();
+void showProgramaInfo(); // you need check if programInfo is null in showProgramaInfo
+void showStationName();  // you need check if stationName is null in showStationName
+void showStationInfo();  // you need check if stationInfo is null in showStationInfo
+void showUtcTime();
 void show_status();
 void showStatus();
 // void showHelp();
@@ -95,6 +108,9 @@ void setup()
   pinMode(volume_up_button, INPUT_PULLDOWN);
   attachInterrupt(digitalPinToInterrupt(volume_up_button), volume_up_pressed, RISING);
 
+ // timer/ticker
+  ticker.start(); 
+  
   // reset pin
   pinMode(RESET_PIN, OUTPUT);
   digitalWrite(RESET_PIN, HIGH);
@@ -149,7 +165,7 @@ void setup()
   show_status();
   //----------------------------DISPLAY-------------------------------------------
   // SETUP OF DISPLAY
- 
+
   main_display();
 }
 void loop()
@@ -158,16 +174,16 @@ void loop()
   currentFrequency = si4735.getCurrentFrequency();
   currentVolume = si4735.getCurrentVolume();
   // checken status, when frequecy changes
-  if ((currentFrequency != previousFrequency)  )
+  if ((currentFrequency != previousFrequency))
   {
 
     previousFrequency = currentFrequency;
     frequency_display();
     if (menu_toggle)
     {
-    SNR_display();
-    signal_display();
-    audio_display();
+      SNR_display();
+      signal_display();
+      audio_display();
     }
     show_status();
     // si4735.frequencyDown();
@@ -184,22 +200,18 @@ void loop()
     show_status();
   }
 
+
+
+  if (!menu_toggle)
+  {
+    ticker.update();
+  }
+  else if(menu_toggle)
+  {
+    ticker.resume();
+  }
+
   // si4735.frequencyUp();
 
   // LowPower.sleep();
-}
-void config_i2c_adress()
-{
-  // si4735.getStatus();
-  int16_t i2cadress = si4735.getDeviceI2CAddress(RESET_PIN);
-  if (i2cadress != 0)
-  {
-    Serial.print("devices has been found");
-    Serial.print("the device has the follow i2c addres");
-    Serial.print(i2cadress);
-  }
-  else
-  {
-    Serial.print("SI4735 not found, check connection, (else stament)");
-  }
 }
