@@ -24,7 +24,7 @@ void frequency_up_pressed()
 {
 
     Serial.print("ik kom in de isr van de frequency up-button \n");
-    // si4735.frequencyUp(); // up with the step that was set
+    si4735.frequencyUp(); // up with the step that was set
     //  Serial.print(" up mode - frequency " + String(currentFrequency / 100.0, 2));    // only for debug purposes
 }
 
@@ -32,7 +32,7 @@ void frequency_up_pressed()
 void frequency_down_pressed()
 {
     Serial.print("ik kom in de isr van de frequency down-button \n");
-    // si4735.frequencyDown(); // down with the step that was set
+    si4735.frequencyDown(); // down with the step that was set
     //  Serial.print("down mode - frequency " + String(currentFrequency / 100.0, 2));    // only for debug puproses
 }
 
