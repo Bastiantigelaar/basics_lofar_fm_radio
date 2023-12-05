@@ -9,14 +9,7 @@ extern uint16_t previousFrequency;
 extern uint8_t currentVolume;
 extern uint8_t previousVolume;
 
-extern char *utcTime;
-extern char *stationName;
-extern char *programInfo;
-extern char *stationInfo;
-void showProgramaInfo(); // you need check if programInfo is null in showProgramaInfo
-void showStationName();  // you need check if stationName is null in showStationName
-void showStationInfo();  // you need check if stationInfo is null in showStationInfo
-void showUtcTime();
+
 // functions
 
 // function ISR 1
@@ -75,49 +68,4 @@ void show_status()
     Serial.print(" Signal:");
     Serial.print(si4735.getCurrentRSSI());
     Serial.println("dBuV]");
-}
-void check_RDS_data()
-{
-    if (si4735.getRdsAllData(&stationName, &stationInfo, &programInfo, &utcTime))
-    {
-        showProgramaInfo(); // you need check if programInfo is null in showProgramaInfo
-        showStationName();  // you need check if stationName is null in showStationName
-        showStationInfo();  // you need check if stationInfo is null in showStationInfo
-        showUtcTime();      // // you need check if rdsTime is null in showUtcTime
-    }
-    else
-    {
-        Serial.print("ik heb geen rds data kunnen vinden!!");
-    }
-}
-void showStationName()
-{
-    if (stationName != NULL)
-    {
-        // update on screen
-    }
-}
-
-void showStationInfo()
-{
-    if (stationInfo != NULL)
-    {
-        // update on screen
-    }
-}
-
-void showProgramaInfo()
-{
-    if (programInfo != NULL)
-    {
-        // do update on screen
-    }
-}
-
-void showUtcTime()
-{
-    if (utcTime != NULL)
-    {
-        // do update on screen
-    }
 }
