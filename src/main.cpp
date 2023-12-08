@@ -34,6 +34,14 @@ void frequency_display();
 void SNR_display();
 void audio_display();
 void signal_display();
+void checkRDS();
+void showProgramInfo();
+void showRDSStation();
+void clearRdsBuffer();
+void showRDSTime();
+void update_program_info();
+
+
 uint16_t currentFrequency;
 uint16_t previousFrequency;
 uint8_t currentVolume;
@@ -85,6 +93,8 @@ int band_down_button = 17;
 char *programInfo;
 char *stationName;
 char *rdsTime;
+char *stationInfo;
+
 char bufferStatioName[40];
 char bufferRdsMsg[65];
 char bufferRdsTime[32];
@@ -98,6 +108,7 @@ uint16_t timeToShowProgram = 1000;
 bool bShowStationName = true;
 int progInfoIdx = 0;
 
+Ticker ticker_rds(checkRDS, 100);
 /**
   showProgramInfo - Shows the Program Information
 */
@@ -108,7 +119,7 @@ void showProgramInfo()
     return;
 
   timeToShowProgram = (progInfoIdx == 0) ? 1500 : 300;
-
+  Serial.print("dit is de program info " + String(programInfo) + "\n");
   programInfo[60] = '\0'; // Removes unwanted characters from the RDS program information
   si4735.removeUnwantedChar(programInfo, 60);
   si4735.removeUnwantedChar(bufferRdsMsg, sizeof(txtAux));
@@ -158,12 +169,19 @@ void checkRDS()
     Serial.print("ik ontvang iets");
     if (si4735.getRdsSync() && si4735.getNumRdsFifoUsed() > 0)
     {
+
       programInfo = si4735.getRdsProgramInformation();
       stationName = si4735.getRdsStationName();
       rdsTime = si4735.getRdsTime();
+      stationInfo = si4735.getRdsStationInformation();
+      //  Serial.print("Dit is de info over het station" + String(stationInfo) + "\n");
+      //  Serial.print("Dit is de naam van het station " + String(stationName) + "\n");
+      //  Serial.print("Dit is het programma informatie " + String(programInfo) + "\n");
+      //  Serial.print("Dit is de tijd " + String(rdsTime) + "\n");
       showProgramInfo();
       showRDSStation();
       showRDSTime();
+      update_menu();
     }
   }
   else
@@ -257,6 +275,7 @@ void setup()
   si4735.setRdsConfig(3, 3, 3, 3, 3);
   si4735.setFifoCount(1);
   show_status();
+  ticker_rds.start();
   //----------------------------DISPLAY-------------------------------------------
   // SETUP OF DISPLAY
 
@@ -296,30 +315,31 @@ void loop()
     audio_display();
     show_status();
   }
+  if (!menu_toggle)
+  {
+    ticker_rds.update();
+  }
+  else if (menu_toggle)
+  {
+    ticker_rds.resume();
+  }
+
   /*
    * so basicly i receive information in this if
    * check if you can read out the station name for example...
    */
 
-  if (si4735.getRdsReceived())
-  {
+  //  if (si4735.getRdsReceived())
+  // {
+  //  checkRDS();
+  // showProgramInfo();
+  // showRDSStation();
+  // Serial.print("Dit is de naam van het station " + String(stationName)+ "\n");
+  // Serial.print("Dit is het programma informatie " + String(programInfo) + "\n");
+  // Serial.print("Dit is de tijd " + String(rdsTime) + "\n");
 
-    showProgramInfo();
-    showRDSStation();
-    Serial.print("Dit is de naam van het station " + String(stationName)+ "\n");
-    Serial.print("Dit is het programma informatie " + String(programInfo) + "\n");
-    Serial.print("Dit is de tijd " + String(rdsTime) + "\n");
-   
-    // Serial.print("ik heb iets");
-    showRDSStation();
-    delay(2000);
-  }
-  else
-  {
-    Serial.print("ik heb niks :(( \n");
-  }
-  checkRDS();
-  // si4735.frequencyUp();
+  // Serial.print("ik heb iets");
+  //  showRDSStation();
 
   // LowPower.sleep();
 }
