@@ -321,22 +321,4 @@ void loop()
     ticker_rds.resume();
   }
 
-  /*
-   * so basicly i receive information in this if
-   * check if you can read out the station name for example...
-   */
-
-  //  if (si4735.getRdsReceived())
-  // {
-  //  checkRDS();
-  // showProgramInfo();
-  // showRDSStation();
-  // Serial.print("Dit is de naam van het station " + String(stationName)+ "\n");
-  // Serial.print("Dit is het programma informatie " + String(programInfo) + "\n");
-  // Serial.print("Dit is de tijd " + String(rdsTime) + "\n");
-
-  // Serial.print("ik heb iets");
-  //  showRDSStation();
-
-  // LowPower.sleep();
 }
