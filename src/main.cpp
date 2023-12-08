@@ -250,20 +250,6 @@ void setup()
   si4735.setFM(6400, 10800, 10000, 10);
   delay(500);
 
-  // TUNE FM CHIP TO FM
-
-  // frequency values of the fm chip
-  // note: every value needs to be multiplide with 10000
-  // so for example 6400 means 64 Mhz, ect
-
-  // default values
-  // int //min_freq = 6400;
-  // int //max_freq = 10800;
-  // int default_freq = 9000;
-  // int step_freq = 10;
-
-  // setup FM functionality
-  // si4735.setFM(min_freq, max_freq, default_freq, step_freq); // set the values that are defined above ^
   si4735.setVolume(20);
   // previous frequency and volume
   currentFrequency = previousFrequency = si4735.getFrequency();
