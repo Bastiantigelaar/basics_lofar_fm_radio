@@ -41,7 +41,6 @@ void clearRdsBuffer();
 void showRDSTime();
 void update_program_info();
 
-
 uint16_t currentFrequency;
 uint16_t previousFrequency;
 uint8_t currentVolume;
@@ -245,6 +244,7 @@ void setup()
     Serial.print("The Si473X I2C address is 0x");
     Serial.println(si4735Addr, HEX);
   }
+  si4735.setAutomaticGainControl(0, 26);
 
   delay(500);
 
