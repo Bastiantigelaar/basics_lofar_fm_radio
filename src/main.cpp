@@ -173,10 +173,7 @@ void checkRDS()
       stationName = si4735.getRdsStationName();
       rdsTime = si4735.getRdsTime();
       stationInfo = si4735.getRdsStationInformation();
-      //  Serial.print("Dit is de info over het station" + String(stationInfo) + "\n");
-      //  Serial.print("Dit is de naam van het station " + String(stationName) + "\n");
-      //  Serial.print("Dit is het programma informatie " + String(programInfo) + "\n");
-      //  Serial.print("Dit is de tijd " + String(rdsTime) + "\n");
+
       showProgramInfo();
       showRDSStation();
       showRDSTime();
