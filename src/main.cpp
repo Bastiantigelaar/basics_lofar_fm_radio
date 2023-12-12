@@ -250,7 +250,7 @@ void setup()
   si4735.setFM(6400, 10800, 10000, 10);
   delay(500);
 
-  si4735.setVolume(20);
+  si4735.setVolume(63);
   // previous frequency and volume
   currentFrequency = previousFrequency = si4735.getFrequency();
   currentVolume = previousVolume = si4735.getVolume();
