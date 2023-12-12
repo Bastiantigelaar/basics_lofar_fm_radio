@@ -12,6 +12,9 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 
+// the low power library. 
+#include "STM32LowPower.h" 
+
 // fm chip declaration
 SI4735 si4735;
 
@@ -79,7 +82,7 @@ int volume_down_button = D1;
 int band_up_button = 16;
 int band_down_button = 17;
 
-// button toggle stereo and mono // is this possible ??
+// button toggle stereo and mono // is this possible ?? nope
 // int toggle_stereo_mono = 29;
 
 // RESET PIN FOR FM RADIO
@@ -199,21 +202,23 @@ void setup()
   Serial.print("IK STA AAN");
   // INDICATES THE PIN MODE
 
+// inilasation of lowpower 
+  LowPower.begin();
   // setup frequency up ISR
   pinMode(frequency_up_button, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(frequency_up_button), frequency_up_pressed, RISING);
+  LowPower.attachInterruptWakeup(frequency_up_button, frequency_up_pressed, RISING,SLEEP_MODE);
 
   // setup frequency down ISR
   pinMode(frequency_down_button, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(frequency_down_button), frequency_down_pressed, RISING);
+  LowPower.attachInterruptWakeup(frequency_down_button, frequency_down_pressed,RISING ,SLEEP_MODE);
 
   // setup volume down ISR
   pinMode(volume_down_button, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(volume_down_button), toggle_menu, RISING);
+  LowPower.attachInterruptWakeup(volume_down_button, toggle_menu, RISING,SLEEP_MODE);
 
   // setup volume up ISR
   pinMode(volume_up_button, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(volume_up_button), volume_up_pressed, RISING);
+  LowPower.attachInterruptWakeup(volume_up_button, volume_up_pressed, RISING,SLEEP_MODE);
 
   // timer/ticker
 
@@ -258,11 +263,12 @@ void setup()
   si4735.setRdsConfig(3, 3, 3, 3, 3);
   si4735.setFifoCount(1);
   show_status();
-  ticker_rds.start();
+  //ticker_rds.start();
   //----------------------------DISPLAY-------------------------------------------
   // SETUP OF DISPLAY
 
   main_display();
+  
 }
 void loop()
 {
@@ -306,5 +312,5 @@ void loop()
   {
     ticker_rds.resume();
   }
-
+  LowPower.sleep(); // hier wil ik dus gaan slapen en blijven slapen
 }
