@@ -12,8 +12,8 @@
 #include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
 
-// the low power library. 
-#include "STM32LowPower.h" 
+// the low power library.
+#include "STM32LowPower.h"
 
 // fm chip declaration
 SI4735 si4735;
@@ -21,6 +21,7 @@ SI4735 si4735;
 // display [tft] declaration
 Adafruit_ILI9341 tft = Adafruit_ILI9341(D7, D8, A6, A4, D10, A5);
 
+volatile int i = 0;
 //  functions prototypes
 void frequency_up_pressed();
 void frequency_down_pressed();
@@ -43,12 +44,14 @@ void showRDSStation();
 void clearRdsBuffer();
 void showRDSTime();
 void update_program_info();
+bool get_menu();
 
 uint16_t currentFrequency;
 uint16_t previousFrequency;
 uint8_t currentVolume;
 uint8_t previousVolume;
-
+bool currentmenustate;
+bool previousmenustate;
 #define SSB 1
 
 #define STORE_TIME 10000 // Time of inactivity to make the current receiver status writable (10s / 10000 milliseconds).
@@ -63,7 +66,7 @@ bool bfoOn = false;
 bool ssbLoaded = false;
 bool fmStereo = true;
 
-bool menu_toggle = true;
+bool menu_toggle = false;
 void toggle_menu();
 
 // volatile float current = 100e6;
@@ -202,23 +205,7 @@ void setup()
   Serial.print("IK STA AAN");
   // INDICATES THE PIN MODE
 
-// inilasation of lowpower 
-  LowPower.begin();
-  // setup frequency up ISR
-  pinMode(frequency_up_button, INPUT_PULLDOWN);
-  LowPower.attachInterruptWakeup(frequency_up_button, frequency_up_pressed, RISING,SLEEP_MODE);
-
-  // setup frequency down ISR
-  pinMode(frequency_down_button, INPUT_PULLDOWN);
-  LowPower.attachInterruptWakeup(frequency_down_button, frequency_down_pressed,RISING ,SLEEP_MODE);
-
-  // setup volume down ISR
-  pinMode(volume_down_button, INPUT_PULLDOWN);
-  LowPower.attachInterruptWakeup(volume_down_button, toggle_menu, RISING,SLEEP_MODE);
-
-  // setup volume up ISR
-  pinMode(volume_up_button, INPUT_PULLDOWN);
-  LowPower.attachInterruptWakeup(volume_up_button, volume_up_pressed, RISING,SLEEP_MODE);
+  // inilasation of lowpower
 
   // timer/ticker
 
@@ -257,28 +244,73 @@ void setup()
 
   si4735.setVolume(63);
   // previous frequency and volume
+  previousmenustate = get_menu();
   currentFrequency = previousFrequency = si4735.getFrequency();
   currentVolume = previousVolume = si4735.getVolume();
 
   si4735.setRdsConfig(3, 3, 3, 3, 3);
   si4735.setFifoCount(1);
   show_status();
-  //ticker_rds.start();
+  // ticker_rds.start();
   //----------------------------DISPLAY-------------------------------------------
-  // SETUP OF DISPLAY
+  //  SETUP OF DISPLAY
 
   main_display();
-  
+
+  pinMode(frequency_up_button, INPUT_PULLDOWN);
+  pinMode(frequency_down_button, INPUT_PULLDOWN);
+  pinMode(volume_down_button, INPUT_PULLDOWN);
+  pinMode(volume_up_button, INPUT_PULLDOWN);
+
+  LowPower.begin();
+
+  // setup frequency up ISR
+  LowPower.attachInterruptWakeup(frequency_up_button, frequency_up_pressed, RISING, SLEEP_MODE);
+  // setup frequency down ISR
+  LowPower.attachInterruptWakeup(frequency_down_button, frequency_down_pressed, RISING, SLEEP_MODE);
+  // setup volume down ISR
+  LowPower.attachInterruptWakeup(volume_down_button, toggle_menu, RISING, SLEEP_MODE);
+  // setup volume up ISR
+  LowPower.attachInterruptWakeup(volume_up_button, volume_up_pressed, RISING, SLEEP_MODE);
 }
 void loop()
 {
   // test of signal quality, audio, and SNR, print status.
+  currentmenustate = get_menu();
+  if (currentmenustate != previousmenustate)
+  {
+
+    if (menu_toggle)
+    {
+      // inladen menu 1
+      main_display();
+      ticker_rds.resume();
+    }
+    else
+    {
+      ticker_rds.update();
+      // inladen menu 2
+      second_display();
+    }
+    previousmenustate = currentmenustate;
+  }
+
+  if (i == -1)
+  {
+    i = 0;
+    si4735.frequencyDown();
+  }
+  if (i == 1)
+  {
+    i = 0;
+    si4735.frequencyUp();
+  }
   currentFrequency = si4735.getCurrentFrequency();
   currentVolume = si4735.getCurrentVolume();
   // checken status, when frequecy changes
+
   if ((currentFrequency != previousFrequency))
   {
-
     previousFrequency = currentFrequency;
     frequency_display();
     if (menu_toggle)
@@ -304,13 +336,6 @@ void loop()
     audio_display();
     show_status();
   }
-  if (!menu_toggle)
-  {
-    ticker_rds.update();
-  }
-  else if (menu_toggle)
-  {
-    ticker_rds.resume();
-  }
   LowPower.sleep(); // hier wil ik dus gaan slapen en blijven slapen
 }
+

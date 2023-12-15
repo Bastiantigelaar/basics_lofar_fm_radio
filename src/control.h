@@ -6,15 +6,8 @@ void second_display();
 
 void toggle_menu()
 {
-    menu_toggle = !menu_toggle;
-    if (menu_toggle)
-    {
-        // inladen menu 1
-        main_display();
-    }
-    else
-    {
-        // inladen menu 2
-        second_display();
-    }
+    menu_toggle = !menu_toggle;   
+}
+bool get_menu(){
+    return menu_toggle;
 }
