@@ -1,4 +1,4 @@
-# basics_lofar_fm_radio
+# LOFAR FM RADIO
 # Beschrijving
 Een radio op basis van de LBA van Astron en een passieve antenne.
 # Documentatie
