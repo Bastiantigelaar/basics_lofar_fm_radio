@@ -6,6 +6,7 @@ Dit is de github pagina van de LOFAR FM radio. De LOFAR FM radio is een project 
 - STM32
 - SI4735
 - ILI9431
+
 Op basis van deze hoofdcomponenten is er hardware en software gemaakt.
 
 # Documentatie
