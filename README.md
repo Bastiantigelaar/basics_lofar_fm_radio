@@ -1,4 +1,6 @@
 # LOFAR FM RADIO
+![image](https://github.com/Bastiantigelaar/basics_lofar_fm_radio/assets/108866346/207e16f8-5630-407f-bc41-011daf8c0ea0)
+
 # Beschrijving
 Een radio op basis van de LBA van Astron en een passieve antenne.
 # Documentatie
