@@ -261,15 +261,15 @@ void setup()
   pinMode(frequency_down_button, INPUT_PULLDOWN);
   pinMode(volume_down_button, INPUT_PULLDOWN);
   pinMode(volume_up_button, INPUT_PULLDOWN);
-
+  
   LowPower.begin();
-
+  
   // setup frequency up ISR
   LowPower.attachInterruptWakeup(frequency_up_button, frequency_up_pressed, RISING, SLEEP_MODE);
   // setup frequency down ISR
   LowPower.attachInterruptWakeup(frequency_down_button, frequency_down_pressed, RISING, SLEEP_MODE);
   // setup volume down ISR
-  LowPower.attachInterruptWakeup(volume_down_button, toggle_menu, RISING, SLEEP_MODE);
+  LowPower.attachInterruptWakeup(volume_down_button, volume_down_pressed, RISING, SLEEP_MODE);
   // setup volume up ISR
   LowPower.attachInterruptWakeup(volume_up_button, volume_up_pressed, RISING, SLEEP_MODE);
 }
@@ -294,17 +294,31 @@ void loop()
     }
     previousmenustate = currentmenustate;
   }
-
-  if (i == -1)
+ 
+  switch (i)
   {
-    i = 0;
+  case -1:
     si4735.frequencyDown();
-  }
-  if (i == 1)
-  {
     i = 0;
+    break;
+  case 1:
     si4735.frequencyUp();
+    i = 0;
+    break;
+  case -2:
+    si4735.volumeDown();
+    i = 0;
+    break;
+  case 2: 
+    si4735.volumeUp();
+    i = 0;
+    break;
+  default:
+    break;
   }
+
+
+
   currentFrequency = si4735.getCurrentFrequency();
   currentVolume = si4735.getCurrentVolume();
   // checken status, when frequecy changes
