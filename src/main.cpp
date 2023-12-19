@@ -66,7 +66,7 @@ bool bfoOn = false;
 bool ssbLoaded = false;
 bool fmStereo = true;
 
-bool menu_toggle = false;
+bool menu_toggle = true;
 void toggle_menu();
 
 // volatile float current = 100e6;
@@ -269,7 +269,7 @@ void setup()
   // setup frequency down ISR
   LowPower.attachInterruptWakeup(frequency_down_button, frequency_down_pressed, RISING, SLEEP_MODE);
   // setup volume down ISR
-  LowPower.attachInterruptWakeup(volume_down_button, volume_down_pressed, RISING, SLEEP_MODE);
+  LowPower.attachInterruptWakeup(volume_down_button, toggle_menu, RISING, SLEEP_MODE);
   // setup volume up ISR
   LowPower.attachInterruptWakeup(volume_up_button, volume_up_pressed, RISING, SLEEP_MODE);
 }
@@ -284,11 +284,9 @@ void loop()
     {
       // inladen menu 1
       main_display();
-      ticker_rds.resume();
     }
     else
     {
-      ticker_rds.update();
       // inladen menu 2
       second_display();
     }
@@ -350,6 +348,14 @@ void loop()
     audio_display();
     show_status();
   }
+  if(menu_toggle)
+  {
   LowPower.sleep(); // hier wil ik dus gaan slapen en blijven slapen
+  }
+  else if(!menu_toggle)
+  {
+    checkRDS();
+    LowPower.deepSleep(1000);
+  }
 }
 
