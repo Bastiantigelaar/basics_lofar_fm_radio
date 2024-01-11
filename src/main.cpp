@@ -45,6 +45,9 @@ void clearRdsBuffer();
 void showRDSTime();
 void update_program_info();
 bool get_menu();
+void inverse_main_display();
+void inverse_second_display();
+void header_display();
 
 uint16_t currentFrequency;
 uint16_t previousFrequency;
@@ -254,16 +257,16 @@ void setup()
   // ticker_rds.start();
   //----------------------------DISPLAY-------------------------------------------
   //  SETUP OF DISPLAY
-
+  header_display();
   main_display();
 
   pinMode(frequency_up_button, INPUT_PULLDOWN);
   pinMode(frequency_down_button, INPUT_PULLDOWN);
   pinMode(volume_down_button, INPUT_PULLDOWN);
   pinMode(volume_up_button, INPUT_PULLDOWN);
-  
+
   LowPower.begin();
-  
+
   // setup frequency up ISR
   LowPower.attachInterruptWakeup(frequency_up_button, frequency_up_pressed, RISING, SLEEP_MODE);
   // setup frequency down ISR
@@ -283,16 +286,18 @@ void loop()
     if (menu_toggle)
     {
       // inladen menu 1
+      inverse_second_display();
       main_display();
     }
     else
     {
       // inladen menu 2
+      inverse_main_display();
       second_display();
     }
     previousmenustate = currentmenustate;
   }
- 
+
   switch (i)
   {
   case -1:
@@ -307,15 +312,13 @@ void loop()
     si4735.volumeDown();
     i = 0;
     break;
-  case 2: 
+  case 2:
     si4735.volumeUp();
     i = 0;
     break;
   default:
     break;
   }
-
-
 
   currentFrequency = si4735.getCurrentFrequency();
   currentVolume = si4735.getCurrentVolume();
@@ -348,14 +351,13 @@ void loop()
     audio_display();
     show_status();
   }
-  if(menu_toggle)
+  if (menu_toggle)
   {
-  LowPower.sleep(); // hier wil ik dus gaan slapen en blijven slapen
+    LowPower.sleep(); // hier wil ik dus gaan slapen en blijven slapen
   }
-  else if(!menu_toggle)
+  else if (!menu_toggle)
   {
     checkRDS();
     LowPower.deepSleep(1000);
   }
 }
-

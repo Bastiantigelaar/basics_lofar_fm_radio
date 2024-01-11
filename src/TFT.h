@@ -64,19 +64,9 @@ void audio_display()
 void main_display()
 {
 
-    tft.begin();
+    // tft.begin();
 
-    tft.fillScreen(ILI9341_WHITE);
-    tft.setRotation(3.5);
-    tft.setCursor(26, 5);
-    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
-    tft.setTextSize(3.5);
-    tft.println("LOFAR-FM RADIO!");
-
-    tft.setCursor(70, 60);
-    tft.setTextColor(ILI9341_RED, ILI9341_WHITE);
-    tft.setTextSize(4.2);
-    tft.println(String(currentFrequency / 100.0, 2) + " MHz");
+    //  tft.fillScreen(ILI9341_WHITE);
 
     tft.setCursor(10, 110);
     tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
@@ -121,19 +111,9 @@ void main_display()
 void second_display()
 {
 
-    tft.begin();
+    // tft.begin();
 
-    tft.fillScreen(ILI9341_WHITE);
-    tft.setRotation(3.5);
-    tft.setCursor(26, 5);
-    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
-    tft.setTextSize(3.5);
-    tft.println("LOFAR-FM RADIO!");
-
-    tft.setCursor(70, 60);
-    tft.setTextColor(ILI9341_RED, ILI9341_WHITE);
-    tft.setTextSize(4.2);
-    tft.println(String(currentFrequency / 100.0, 2) + " MHz");
+    // tft.fillScreen(ILI9341_WHITE);
 
     tft.setCursor(10, 110);
     tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
@@ -207,4 +187,106 @@ void update_program_info()
         tft.setTextSize(2.9);
         tft.println(String(programInfo));
     }
+}
+void inverse_main_display()
+{
+
+    // tft.begin();
+
+    //  tft.fillScreen(ILI9341_WHITE);
+    // tft.setRotation(3.5);
+
+    tft.setCursor(10, 110);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println("Volume ");
+
+    tft.setCursor(140, 110);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println(String(currentVolume));
+
+    tft.setCursor(10, 140);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println("SNR ");
+
+    tft.setCursor(140, 140);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println(String(si4735.getCurrentSNR()) + "dB");
+
+    tft.setCursor(10, 170);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println("Signal ");
+
+    tft.setCursor(140, 170);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println(String(si4735.getCurrentRSSI()) + "dBuV");
+
+    tft.setCursor(10, 200);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println("AUDIO ");
+
+    tft.setCursor(140, 200);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println((si4735.getCurrentPilot()) ? "STEREO" : "MONO");
+}
+void inverse_second_display()
+{
+
+    // tft.begin();
+
+    // tft.fillScreen(ILI9341_WHITE);
+
+    tft.setCursor(10, 110);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println("Station  ");
+
+    tft.setCursor(140, 110);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println(String(stationName));
+
+    tft.setCursor(10, 140);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println("Tijd ");
+
+    tft.setCursor(100, 140);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println(String(rdsTime));
+
+    tft.setCursor(10, 170);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println("Info ");
+
+    tft.setCursor(140, 200);
+    tft.setTextColor(ILI9341_WHITE);
+    tft.setTextSize(3);
+    tft.println(String(programInfo));
+}
+void header_display()
+{
+    tft.begin();
+
+    tft.fillScreen(ILI9341_WHITE);
+    tft.setRotation(3.5);
+    tft.setRotation(3.5);
+    tft.setCursor(26, 5);
+    tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+    tft.setTextSize(3.5);
+    tft.println("LOFAR-FM RADIO!");
+
+    tft.setCursor(70, 60);
+    tft.setTextColor(ILI9341_RED, ILI9341_WHITE);
+    tft.setTextSize(4.2);
+    tft.println(String(currentFrequency / 100.0, 2) + " MHz");
 }
