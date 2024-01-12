@@ -17,7 +17,6 @@
 // the low power library.
 #include "STM32LowPower.h"
 
-
 // fm chip declaration
 SI4735 si4735;
 
@@ -50,7 +49,15 @@ void showRDSStation();
 void clearRdsBuffer();
 void showRDSTime();
 void update_program_info();
+void display_voltage();
+void inverse_main_display();
+void inverse_second_display();
+void header_display();
+
+// control functions
 bool get_menu();
+float batterij_niveau();
+String strepen(float voltage);
 
 uint16_t currentFrequency;
 uint16_t previousFrequency;
@@ -58,6 +65,7 @@ uint8_t currentVolume;
 uint8_t previousVolume;
 bool currentmenustate;
 bool previousmenustate;
+
 #define SSB 1
 
 #define STORE_TIME 10000 // Time of inactivity to make the current receiver status writable (10s / 10000 milliseconds).
@@ -95,8 +103,7 @@ int Shutdown_amplifier = PA_8;
 int V1 = PA_15;
 int V2 = PA_14;
 
-
-int batterij_inlezen  = PB_0;
+int batterij_inlezen = PB_0;
 
 // buttons band up and down
 
@@ -142,7 +149,7 @@ void showProgramInfo()
     return;
 
   timeToShowProgram = (progInfoIdx == 0) ? 1500 : 300;
-  programInfo[60] = '\0'; // Removes unwanted characters 
+  programInfo[60] = '\0'; // Removes unwanted characters
   si4735.removeUnwantedChar(programInfo, 60);
   si4735.removeUnwantedChar(bufferRdsMsg, sizeof(txtAux));
   strncpy(txtAux, &programInfo[progInfoIdx], sizeof(txtAux));
@@ -235,8 +242,9 @@ void setup()
   digitalWrite(V2, LOW);
 
   // setup of the ANALOG IN
-   // batterij_inlezen wordt gezet op een analoge input met 2^12 = 4096 kwantanserings niveau
-  pinMode(batterij_inlezen, INPUT);
+  // batterij_inlezen wordt gezet op een analoge input met 2^12 = 4096 kwantanserings niveau
+  pinMode(PB0, INPUT);
+
   analogReadResolution(12);
 
   // turns  amplifier on
@@ -276,7 +284,7 @@ void setup()
   si4735.setFM(6400, 10800, 10000, 10);
   delay(500);
 
-  si4735.setVolume(63);
+  si4735.setVolume(25);
   // previous frequency and volume
   previousmenustate = get_menu();
   currentFrequency = previousFrequency = si4735.getFrequency();
@@ -288,10 +296,10 @@ void setup()
   // ticker_rds.start();
   //----------------------------DISPLAY-------------------------------------------
   //  SETUP OF DISPLAY
-
+  header_display();
   main_display();
 
-  pinMode(frequency_up_button, INPUT_PULLDOWN);
+  pinMode(frequency_up_button, INPUT);
   pinMode(frequency_down_button, INPUT_PULLDOWN);
   pinMode(volume_down_button, INPUT_PULLDOWN);
   pinMode(volume_up_button, INPUT_PULLDOWN);
@@ -308,13 +316,41 @@ void setup()
   LowPower.attachInterruptWakeup(volume_up_button, volume_up_pressed, RISING, SLEEP_MODE);
   // setup SWITCH MENU
   LowPower.attachInterruptWakeup(toggle_menu_button, toggle_menu, RISING, SLEEP_MODE);
-
-  
-
-
 }
 void loop()
 {
+  /*
+  float reading = batterij_niveau();
+  String str = strepen(reading);
+  // float reading2 = analogRead(PB0); // deze doet het dus
+  tft.begin();
+
+  tft.fillScreen(ILI9341_WHITE);
+  tft.setRotation(3.5);
+  tft.setCursor(26, 5);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3.5);
+  tft.println("LOFAR-FM RADIO!");
+
+  tft.setCursor(70, 60);
+  tft.setTextColor(ILI9341_RED, ILI9341_WHITE);
+  tft.setTextSize(4.2);
+  tft.println(String(currentFrequency / 100.0, 2) + " MHz");
+
+
+  tft.setCursor(10, 170);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println(String(batterij_niveau()));
+
+  tft.setCursor(10, 200);
+  tft.setTextColor(ILI9341_BLACK, ILI9341_WHITE);
+  tft.setTextSize(3);
+  tft.println(str); // print het aantal strepen die nog beschikbaar zijn
+
+  delay(2000);
+*/
+
   // test of signal quality, audio, and SNR, print status.
   currentmenustate = get_menu();
   if (currentmenustate != previousmenustate)
@@ -323,11 +359,13 @@ void loop()
     if (menu_toggle)
     {
       // inladen menu 1
+      inverse_second_display();
       main_display();
     }
     else
     {
       // inladen menu 2
+      inverse_main_display();
       second_display();
     }
     previousmenustate = currentmenustate;
@@ -379,11 +417,16 @@ void loop()
   else if (currentVolume != previousVolume)
   {
     previousVolume = currentVolume;
-    volume_display();
-    SNR_display();
-
-    signal_display();
-    audio_display();
+    if (menu_toggle)
+    {
+      volume_display();
+      SNR_display();
+      signal_display();
+      audio_display();
+    }
+    clearRdsBuffer();
+    showProgramInfo();
+    showRDSStation();
     show_status();
   }
   if (menu_toggle)
@@ -396,4 +439,3 @@ void loop()
     LowPower.deepSleep(1000);
   }
 }
-
