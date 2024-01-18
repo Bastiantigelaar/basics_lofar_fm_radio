@@ -9,7 +9,7 @@ extern uint16_t previousFrequency;
 extern uint8_t currentVolume;
 extern uint8_t previousVolume;
 extern volatile int i;
-
+volatile int band_index = 0;
 // functions
 
 // function ISR 1
@@ -63,4 +63,25 @@ void frequency_up_pressed()
 void frequency_down_pressed()
 {
     i = -1;
+}
+void band_up()
+{
+    // DEBUG
+    if (band_index > 0)
+    {
+      //  second_display();
+        band_index--;
+    }
+    si4735.setFmBandwidth(band_index);
+}
+
+void band_down()
+{
+    // second_display();
+    if (band_index < 4)
+    {
+      //  second_display();
+        band_index++;
+    }
+    si4735.setFmBandwidth(band_index);
 }

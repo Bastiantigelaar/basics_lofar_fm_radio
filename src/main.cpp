@@ -27,6 +27,8 @@ void frequency_up_pressed();
 void frequency_down_pressed();
 void volume_up_pressed();
 void volume_down_pressed();
+void band_down();
+void band_up();
 
 // void showHelp();
 
@@ -242,7 +244,7 @@ void setup()
 
   // Starts defaul radio function and band (FM; from 84 to 108 MHz; 103.D9 MHz; step 100kHz)
   si4735.setup(RESET_PIN, FM_FUNCTION); // sets to fm function
-  si4735.setFM(6400, 10800, 10000, 10);
+  si4735.setFM(6400, 10800, 10100, 10);
   delay(500);
 
   si4735.setVolume(63);
@@ -270,9 +272,9 @@ void setup()
   // setup frequency up ISR
   LowPower.attachInterruptWakeup(frequency_up_button, frequency_up_pressed, RISING, SLEEP_MODE);
   // setup frequency down ISR
-  LowPower.attachInterruptWakeup(frequency_down_button, frequency_down_pressed, RISING, SLEEP_MODE);
+  LowPower.attachInterruptWakeup(frequency_down_button, band_down, RISING, SLEEP_MODE);
   // setup volume down ISR
-  LowPower.attachInterruptWakeup(volume_down_button, toggle_menu, RISING, SLEEP_MODE);
+  LowPower.attachInterruptWakeup(volume_down_button, band_up, RISING, SLEEP_MODE);
   // setup volume up ISR
   LowPower.attachInterruptWakeup(volume_up_button, volume_up_pressed, RISING, SLEEP_MODE);
 }
